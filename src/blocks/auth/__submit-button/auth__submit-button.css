@@ -1,0 +1,19 @@
+.auth__submit-button {
+  margin-top: 216px;
+  height: 50px;
+  background: #ffffff;
+  border-radius: 2px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: #000000;
+  border: none;
+}
+@media screen and (max-width: 720px) {
+  .auth__submit-button {
+    margin-top: 173px;
+  }
+}
