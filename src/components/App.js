@@ -8,11 +8,12 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import api from "../utils/api";
+import { api, authApi } from "../utils/api";
 import Login from "./Login";
 import Register from "./Register";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import InfoTooltip from "./InfoTooltip";
 
 function App() {
   function handleEditAvatarClick() {
@@ -24,11 +25,15 @@ function App() {
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
   }
+  function handleInfoPopup() {
+    setInfoPopupOpen(true);
+  }
   function closeAllPopups() {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setImagePopupOpen(false);
+    setInfoPopupOpen(false);
   }
   function handleCardClick(item) {
     setImagePopupOpen(true);
@@ -52,22 +57,63 @@ function App() {
       })
       .catch((err) => console.log(err));
   }
-  function handleLogout(){
+  function tokenCheck() {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      authApi.getToken(jwt).then((res) => {
+        if (res) {
+          console.log(res);
+          setLoggedIn(true);
+          setCurrentEmail(res.data.email);
+          history.push("/");
+        }
+      });
+    }
+  }
+  function handleSignUp(data) {
+    authApi
+      .signUp(data)
+      .then((res) => {
+        console.log(res);
+        handleInfoPopup();
+        setInfoPopupType(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        handleInfoPopup();
+        setInfoPopupType(false);
+      });
+  }
+  function handleSignIn(data) {
+    authApi
+      .signIn(data)
+      .then((res) => {
+        localStorage.setItem("jwt", res.token);
+        tokenCheck();
+      })
+      .catch((err) => {
+        console.log(err);
+        handleInfoPopup();
+        setInfoPopupType(false);
+      });
+  }
+  function handleLogout() {
     setLoggedIn(false);
+    localStorage.removeItem("jwt");
   }
-  function handleLogin(){
-    setLoggedIn(true);
-    history.push('/')
-  }
-  
+
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
+  const [isInfoPopupOpen, setInfoPopupOpen] = React.useState(false);
+  const [infoPopupType, setInfoPopupType] = React.useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [currentUser, setCurrentUser] = React.useState({});
-  const [loggedIn, setLoggedIn] = React.useState(true);
-  let history = useHistory()
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [currentEmail, setCurrentEmail] = React.useState("");
+  let history = useHistory();
+  tokenCheck();
   React.useEffect(() => {
     Promise.all([api.getData("/users/me"), api.getData("/cards")])
       .then(([userData, cardsData]) => {
@@ -115,10 +161,10 @@ function App() {
   return (
     <div className='root'>
       <div className='page'>
-        <Header handleLogout={handleLogout} />
+        <Header handleLogout={handleLogout} currentEmail={currentEmail} />
         <Switch>
           <CurrentUserContext.Provider value={currentUser}>
-          <ProtectedRoute
+            <ProtectedRoute
               component={Main}
               path='/'
               onEditProfile={handleEditProfileClick}
@@ -132,12 +178,22 @@ function App() {
               loggedIn={loggedIn}
             />
             <Route path='/sign-in' exact>
-              <Login loggedIn={loggedIn} handleLogin={handleLogin} />
+              <Login loggedIn={loggedIn} onSignIn={handleSignIn} />
+              <InfoTooltip
+                onClose={closeAllPopups}
+                isOpen={isInfoPopupOpen}
+                popupType={infoPopupType}
+              />
             </Route>
             <Route path='/sign-up' exact>
-              <Register loggedIn={loggedIn}  />
+              <Register loggedIn={loggedIn} onSignUp={handleSignUp} />
+              <InfoTooltip
+                onClose={closeAllPopups}
+                isOpen={isInfoPopupOpen}
+                popupType={infoPopupType}
+              />
             </Route>
-            
+
             <EditProfilePopup
               isOpen={isEditProfilePopupOpen}
               onClose={closeAllPopups}

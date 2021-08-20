@@ -8,14 +8,12 @@ class Api {
     return fetch(this._url + path, {
       method: "GET",
       headers: this._headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
   }
   patchProfile(data) {
     return fetch(this._url + "/users/me", {
@@ -25,14 +23,12 @@ class Api {
         name: data.name,
         about: data.about,
       }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
   }
 
   addNewCard(data) {
@@ -43,27 +39,23 @@ class Api {
         name: data.name,
         link: data.link,
       }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
   }
   deleteCard(id) {
     return fetch(this._url + "/cards/" + id, {
       method: "DELETE",
       headers: this._headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
   }
   handleCard(id, action) {
     console.log(id);
@@ -75,14 +67,12 @@ class Api {
     return fetch(this._url + "/cards/likes/" + id, {
       method: this._method,
       headers: this._headers,
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
   }
   updateAvatar(data) {
     return fetch(this._url + "/users/me/avatar", {
@@ -91,14 +81,12 @@ class Api {
       body: JSON.stringify({
         avatar: data.avatar,
       }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-      })
-      
+    }).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
   }
   _rendering(button, isLoading) {
     if (isLoading === true) {
@@ -107,7 +95,52 @@ class Api {
       button.textContent = "Сохранить";
     }
   }
+  signUp(data) {
+    return fetch(this._url + "/signup", {
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify({
+        password: data.password,
+        email: data.email,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        console.log(res);
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
+  }
+  signIn(data) {
+    return fetch(this._url + "/signin", {
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify({
+        "password": data.password,
+        "email": data.email,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        console.log(res);
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
+  }
+  getToken(JWT){
+    return fetch(this._url + "/users/me", {
+      method: "GET",
+      headers: {...this._headers, Authorization: `Bearer ${JWT}`},
+    }).then((res) => {
+      if (res.ok) {
+        console.log(res);
+        return res.json();
+      }
+      return Promise.reject(`Ошибка: ${res.status}`);
+    });
+  }
 }
+  
 const apiData = {
   url: "https://nomoreparties.co/v1/cohort-25",
   headers: {
@@ -115,5 +148,12 @@ const apiData = {
     "Content-Type": "application/json",
   },
 };
+const authData = {
+  url: "https://auth.nomoreparties.co",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
+const authApi = new Api(authData);
 const api = new Api(apiData);
-export default api;
+export { api, authApi };
