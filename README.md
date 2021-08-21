@@ -1,7 +1,25 @@
-# Здесь будет ваш проект на Реакте с авторизацией и регистрацией
+**MESTO REACT + AUTHORIZATION**
 
-Используйте ваши предыдущие наработки по проекту Mesto. Это может быть работа 11-го спринта или его улучшенная версия после 2-х последних спринтов. 
+## В этом проекте использовались:
 
-Все запросы на авторизацию, регистрацию и проверку токена должны работать через сервис `https://auth.nomoreparties.co`. Остальные запросы, не относящиеся к этой проектной работе могут быть к бэкенду из предыдущих спринтов.
+- React Js (functional components)
+- React Router
+- Java Script/JSX
+- BEM
+- API
+- CSS (flexbox, grid)
+- npm
 
-Успехов!
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
