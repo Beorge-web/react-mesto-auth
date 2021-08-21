@@ -62,7 +62,6 @@ function App() {
     if (jwt) {
       authApi.getToken(jwt).then((res) => {
         if (res) {
-          console.log(res);
           setLoggedIn(true);
           setCurrentEmail(res.data.email);
           history.push("/");
@@ -74,9 +73,9 @@ function App() {
     authApi
       .signUp(data)
       .then((res) => {
-        console.log(res);
         handleInfoPopup();
         setInfoPopupType(true);
+        history.push("sign-in");
       })
       .catch((err) => {
         console.log(err);
@@ -113,8 +112,12 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [currentEmail, setCurrentEmail] = React.useState("");
   let history = useHistory();
-  tokenCheck();
   React.useEffect(() => {
+    tokenCheck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  React.useEffect(() => {
+    if(loggedIn){
     Promise.all([api.getData("/users/me"), api.getData("/cards")])
       .then(([userData, cardsData]) => {
         setCurrentUser(userData);
@@ -122,13 +125,12 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
-      });
-  }, []);
+      });}
+  }, [loggedIn]);
 
   //cards ->
   const [cards, setCards] = React.useState([]);
   function handleCardLike(card) {
-    console.log(card);
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api
       .handleCard(card._id, !isLiked)
@@ -138,7 +140,6 @@ function App() {
       .catch((err) => console.log(err));
   }
   function handleCardDelete(card) {
-    console.log(card);
     api
       .deleteCard(card._id)
       .then(() => {
@@ -152,7 +153,6 @@ function App() {
       .addNewCard(data)
       .then((newCard) => {
         setCards([newCard, ...cards]);
-        console.log(newCard);
         closeAllPopups();
       })
       .catch((err) => console.log(err));

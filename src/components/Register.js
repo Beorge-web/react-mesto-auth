@@ -12,7 +12,6 @@ function Register(props) {
   }
   function handleSubmit(e){
     e.preventDefault();
-    console.log(emailValue + ' ' + passValue)
     props.onSignUp({
       email: emailValue,
       password: passValue,

@@ -11,7 +11,6 @@ function Login({ handleLogin, ...props }) {
   }
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(emailValue + " " + passValue);
     props.onSignIn({
       email: emailValue,
       password: passValue,

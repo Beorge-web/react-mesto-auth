@@ -3,17 +3,11 @@ class Api {
     this._url = config.url;
     this._headers = config.headers;
   }
-
   getData(path) {
     return fetch(this._url + path, {
       method: "GET",
       headers: this._headers,
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
   patchProfile(data) {
     return fetch(this._url + "/users/me", {
@@ -23,12 +17,7 @@ class Api {
         name: data.name,
         about: data.about,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
 
   addNewCard(data) {
@@ -39,23 +28,13 @@ class Api {
         name: data.name,
         link: data.link,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
   deleteCard(id) {
     return fetch(this._url + "/cards/" + id, {
       method: "DELETE",
       headers: this._headers,
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
   handleCard(id, action) {
     console.log(id);
@@ -67,12 +46,7 @@ class Api {
     return fetch(this._url + "/cards/likes/" + id, {
       method: this._method,
       headers: this._headers,
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
   updateAvatar(data) {
     return fetch(this._url + "/users/me/avatar", {
@@ -81,12 +55,7 @@ class Api {
       body: JSON.stringify({
         avatar: data.avatar,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
   _rendering(button, isLoading) {
     if (isLoading === true) {
@@ -103,44 +72,32 @@ class Api {
         password: data.password,
         email: data.email,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        console.log(res);
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
   signIn(data) {
     return fetch(this._url + "/signin", {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
-        "password": data.password,
-        "email": data.email,
+        password: data.password,
+        email: data.email,
       }),
-    }).then((res) => {
-      if (res.ok) {
-        console.log(res);
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }).then(res =>  this._getResponseData(res));
   }
-  getToken(JWT){
+  getToken(JWT) {
     return fetch(this._url + "/users/me", {
       method: "GET",
-      headers: {...this._headers, Authorization: `Bearer ${JWT}`},
-    }).then((res) => {
-      if (res.ok) {
-        console.log(res);
-        return res.json();
-      }
+      headers: { ...this._headers, Authorization: `Bearer ${JWT}` },
+    }).then(res =>  this._getResponseData(res));
+  }
+  _getResponseData(res) {
+    if (!res.ok) {
       return Promise.reject(`Ошибка: ${res.status}`);
-    });
+    }
+    return res.json();
   }
 }
-  
+
 const apiData = {
   url: "https://nomoreparties.co/v1/cohort-25",
   headers: {

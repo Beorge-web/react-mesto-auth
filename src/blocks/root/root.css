@@ -3,5 +3,5 @@
   background-color: #000;
   margin-left: auto;
   margin-right: auto;
-  height: max-content;
+  min-height: 100vh;
 }
