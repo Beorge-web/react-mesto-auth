@@ -7,10 +7,12 @@
 - Java Script/JSX
 - BEM
 - API
-- CSS (flexbox, grid)
+- HTML/CSS (flexbox, grid)
 - npm
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## GitHub Pages
 
 ## Available Scripts
 
